@@ -1,0 +1,74 @@
+base hit sound set bits
+
+0 normal-hitnormal
+1 normal-hitwhistle
+2 normal-hitfinish
+3 normal-hitclap
+4 normal-sliderslide
+5 normal-slidertick
+6 normal-sliderwhistle
+
+7 soft-hitnormal
+8 soft-hitwhistle
+9 soft-hitfinish
+10 soft-hitclap
+11 soft-sliderslide
+12 soft-slidertick
+13 soft-sliderwhistle
+
+14 drum-hitnormal
+15 drum-hitwhistle
+16 drum-hitfinish
+17 drum-hitclap
+18 drum-sliderslide
+19 drum-slidertick
+20 drum-sliderwhistle
+
+
+
+
+
+enum hs_enum
+	{
+		n_hitnormal 		= pow ( 2, 0 ),
+		n_hitwhistle 		= pow ( 2, 1 ),
+		n_hitfinish	   		= pow ( 2, 2 ),
+		n_hitclap	   		= pow ( 2, 3 ),
+		n_sliderslide 		= pow ( 2, 4 ),
+		n_slidertick   		= pow ( 2, 5 ),
+		n_sliderwhistle = pow ( 2, 6 ),
+
+		s_hitnormal 		= pow ( 2, 7 ),
+		s_hitwhistle 		= pow ( 2, 8 ),
+		s_hitfinish	  		= pow ( 2, 9 ),
+		s_hitclap	  		= pow ( 2, 10 ),
+		s_sliderslide 		= pow ( 2, 11 ),
+		s_slidertick   		= pow ( 2, 12 ),
+		s_sliderwhistle	= pow ( 2, 13 ),
+
+		d_hitnormal 		= pow ( 2, 14 ),
+		d_hitwhistle 		= pow ( 2, 15 ),
+		d_hitfinish	   		= pow ( 2, 16 ),
+		d_hitclap	   		= pow ( 2, 17 ),
+		d_sliderslide 		= pow ( 2, 18 ),
+		d_slidertick   		= pow ( 2, 19 ),
+		d_sliderwhistle = pow ( 2, 20 )
+	};
+
+enum hsSection
+	{
+		normal = 	0,
+		soft = 			7,
+		drum = 		14
+	};
+
+enum hsType
+	{
+		hitnormal = 		0,
+		hitwhistle = 		1,
+		hitfinish = 	  		2,
+		hitclap =       		3,
+		sliderslide = 		4,
+		slidertick =   		5,
+		sliderwhistle = 	6
+	};

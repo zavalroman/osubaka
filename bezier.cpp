@@ -12,7 +12,7 @@ Bezier::Bezier()
 {
 }
 
-void Bezier::setControl( std::vector<int>& controlX, std::vector<int>& controlY )
+void Curve::doMath()
 {
 	int bendStart, bendEnd, refNum;
 	float tStep, msLength, ndLength = 0;
@@ -44,13 +44,13 @@ void Bezier::setControl( std::vector<int>& controlX, std::vector<int>& controlY 
 	for ( size_t i = 0; i < slNodeAdr.size(); i++ )
 	{
 		if ( i != 0 ) bendStart = bendEnd + 1;
-		bendEnd = slNodeAdr [ i ]; // если слайдер начинается с узла?
+		bendEnd = slNodeAdr[ i ]; // если слайдер начинается с узла?
 		refNum = bendEnd - bendStart;
-		tStep = nodeLength [ i ] * objects [ j ].slLength / ndLength;
+		tStep = nodeLength[ i ] * objects[ j ].slLength / ndLength;
 
 		bool last = false;
 		if ( i == slNodeAdr.size() - 1 ) last = true;
-		if ( objects [ j ].slType [ 0 ] == 80  ) 
+		if ( objects[ j ].slType[ 0 ] == 80  ) 
 			createSliderCircum ( &j, &tStep );
 		else
 			createSliderBezier ( &j, &tStep, &refNum, &bendStart, last );
@@ -59,3 +59,4 @@ void Bezier::setControl( std::vector<int>& controlX, std::vector<int>& controlY 
 	slNodeAdr.clear();
 	nodeLength.clear();
 }
+

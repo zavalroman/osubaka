@@ -1,6 +1,7 @@
 /*
 *	main.cpp
 *	osu!baka
+*	g++ *cpp -o osubaka -lGL -lGLU -lglut
 */
 
 #define SCREEN_WIDTH 800
@@ -13,7 +14,9 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
-#include "keyinput.cpp"
+#include "keyinput.cxx"
+
+#include "beatmap.h"
 
 void display ( void )
 {
@@ -23,7 +26,7 @@ void display ( void )
 	glClear			( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); //Clear the color buffer (more buffers later on)
 	/*------------------END Clear----------------------------*/
 	
-	glutSwapBuffers   ();
+	glutSwapBuffers();
 	glutPostRedisplay(); 
 }
 
@@ -65,6 +68,8 @@ int main( int argc, char** argv )
 	glBlendFunc 	( GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA );
 	glEnable 	  	( GL_TEXTURE_2D );
 	glTranslatef	( -2.56, -1.92, -4.6 );
+	
+	Beatmap* beatmap = new Beatmap( "/home/kaktus/develop/osu/songs/primary-koizora/Primary - Koizora (Frostmourne) [Insane].osu" );
 	
 	glutMainLoop();
 	return 0;

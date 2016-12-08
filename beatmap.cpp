@@ -4,39 +4,44 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <sstring>
-#include <regex>
+//#include <sstring>
+#include <string>
+//#include <regex>
 
-Beatmap::Beatmap( const char* pathToOsuFile )
+Beatmap::Beatmap()
+{
+	
+}
+
+bool Beatmap::readHitObjects( const char* pathToOsuFile )
 {
 	bool hoFlag = false;
 	int hoCount = 0;
+	int slCount = 0;
 	
-	string line;
-	fstream* osuFile = new fstream;
+	std::string line;
+	std::fstream* osuFile = new std::fstream;
 	
 	osuFile->open( pathToOsuFile );
 	
 	if ( !osuFile ) {
-		std::cout << "Error occured while open osu file\n";
-		return;
+		std::cout << "ERROR: osu file is not open\n";
+		return false;
 	}
 	
-	
-	
 	while ( getline( *osuFile, line ) ) {
-		if ( strBuf.find("[HithitObjects]") != std::string::npos )
-			hoFlag = true
+		std::cout << line.length() << "\n";
+		
+		if ( line.find("[HitObjects]") != std::string::npos )
+			hoFlag = true;
 		
 		if ( hoFlag ) {
 			hitObjects.push_back( objTemplar );
 			
 			*osuFile >> hitObjects[ hoCount ].x;
-			hitObjects[ hoCount ].slControlX.push_back( hitObjects[ hoCount ].x );
 			osuFile->get(); // missing comma
 			
 			*osuFile >> hitObjects[ hoCount ].y;
-			hitObjects[ hoCount ].slControlY.push_back( hitObjects[ hoCount ].y );
 			osuFile->get();
 			
 			*osuFile >> hitObjects[ hoCount ].time;
@@ -46,6 +51,7 @@ Beatmap::Beatmap( const char* pathToOsuFile )
 			osuFile->get();
 			
 			*osuFile >> hitObjects[ hoCount ].hitSound;
+		
 			/*
 			cirles
 			1 ==  0000 0000 0000 0001
@@ -60,36 +66,72 @@ Beatmap::Beatmap( const char* pathToOsuFile )
 			*/
 			
 			//if ( intBuf == 2 || intBuf == 6 || intBuf == 22 || intBuf == 38 ) // if slider
-			if ( hitObjects[ hoCount ].type & 2 ) // if slider
-			{
+			if ( hitObjects[ hoCount ].type & 2 ) { // if slider
+				control.push_back( cpTemplar );
+				control[ slCount ].hoId = hoCount;
+				control[ slCount ].x.push_back( hitObjects[ hoCount ].x );
+				control[ slCount ].y.push_back( hitObjects[ hoCount ].y );
+				
 				osuFile->get();
 				osuFile->get( hitObjects[ hoCount ].slType[0] );
 				osuFile->get();
 					
 				int j = 1;	
 				char catchComma = 0;
-				while ( catchComma != ',' )
-				{
-					hitObjects[ hoCount ].slControlX.push_back( j ); // create new slot in vector
-					hitObjects[ hoCount ].slControlY.push_back( j );	
+				while ( catchComma != ',' ) {
+					slControl[ slCount ].x.push_back( j ); // create new slot in vector
+					slControl[ slCount ].y.push_back( j );	
 				
-					*osuFile >> hitObjects[ hoCount ].slControlX[ j ];
+					*osuFile >> slControl[ slCount ].x[ j ];
 					osuFile->get();
-					*osuFile >> hitObjects[ hoCount ].slControlY[ j ];
+					*osuFile >> slControl[ slCount ].y[ j ];
 					osuFile->get( catchComma );
 				
 					j++;
 				}		
-				*osuFile >> hitObjects [ hoCount ].slPasses;
+				*osuFile >> hitObjects[ hoCount ].slPasses;
 				osuFile->get();
-				*osuFile >> hitObjects [ hoCount ].slLength;
+				*osuFile >> hitObjects[ hoCount ].slLength;
 				osuFile->get();
-				*osuFile >> hitObjects [ hoCount ].slEdgeSound;
-			}
+				*osuFile >> hitObjects[ hoCount ].slEdgeSound;
+				
+				slCount++;
+			} // endif slider
+			//std::cout << hitObjects[ hoCount ].x << "  " << hitObjects[ hoCount ].y << std::endl;
+			
 			hoCount++;
 		}
 	}
+	hitObjects.pop_back();
 	
-	
+	osuFile->close();
 	delete osuFile;
+	return true;
+}
+
+bool Beatmap::generateSliders()
+{
+	int hoId;
+	for ( int i = 0; i < slControl.size(); ++i ) {
+		hoId = slControl[ i ].hoId;
+		switch ( hitObjects[ hoId ].slType ) {
+			case 'B': {
+				
+				break;
+			}
+			case 'P': {
+				break;
+			}
+			//case 'C': {
+			//	break;
+			//}
+			case 'L': {
+				break;
+			}
+			default: {
+				std::cout << "ERROR: slider type not found\n";
+				return false;
+			}
+		}
+	}
 }

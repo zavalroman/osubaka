@@ -8,24 +8,18 @@
 
 #include <vector>
 
-class Bezier {
+#include "curve.h"
+
+class Bezier : public Curve {
 public:
 	Bezier() {}
 	~Bezier();
 	
-	void setControl( std::vector<int>& controlX, std::vector<int>& controlY );
-	
-	std::vector<float>* getCurveX() {
-		return curveX;
-	}
-	std::vector<float>* getCurveY() {
-		return curveY;
-	}
+	void doMath();
 	
 private:
+	
   
-  std::vector<float>* curveX;
-  std::vector<float>* curveY;
   
 };
 

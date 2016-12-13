@@ -17,84 +17,85 @@ void Circum::doMath()
 {
 }
 
-bool Beatmap::getBow ( size_t * j, float * i, float * intersecX, float * intersecY, float * R, bool last )
+bool Beatmap::getBow ( float i, float intersecX, float intersecY, float R, bool last )
 {
 	float posX, posY;
 	
-	posX = *intersecX + *R * cos ( *i );
-	posY = *intersecY - *R * sin ( *i ); 
+	posX = intersecX + R * cos( i );
+	posY = intersecY - R * sin( i ); 
 	
-	if ( objects [ *j ].curveX.size() > 0 )
-	{	lenTest = slPixelLength;
-		float lenBuf = newSegmentLength ( j, &posX, &posY );
-		slPixelLength += lenBuf;	
+	if ( curveX->size() > 0 )
+	{	lenTest = pixelLength;
+		float lenBuf = newSegmentLength( posX, posY );
+		pixelLength += lenBuf;	
 		
-		if ( slPixelLength > objects [ *j ].slLength )
+		if ( pixelLength > length )
 		{	//cout << " SL PIXEL CIRCUM   " << slPixelLength << "    " << objects [ *j ].slLength << endl;
-			float requireSegment = objects [ *j ].slLength - lenTest;
+			float requireSegment = length - lenTest;
 			requireSegment = requireSegment / lenBuf;
 				
-			float vecX = posX - objects [ *j ].curveX.back(); 
-			float vecY = posY - objects [ *j ].curveY.back();
+			float vecX = posX - curveX->back(); 
+			float vecY = posY - curveY->back();
 			
 			vecX = vecX * requireSegment;
 			vecY = vecY * requireSegment;
 			
-			posX = objects [ *j ].curveX.back() + vecX;
-			posY = objects [ *j ].curveY.back() + vecY;
+			posX = curveX->back() + vecX;
+			posY = curveY->back() + vecY;
 				
-			lenBuf = newSegmentLength ( j, &posX, &posY );
+			lenBuf = newSegmentLength( posX, posY );
 			lenTest += lenBuf;
 			//cout << " LEN BUF   " << lenBuf << " lenTest   " << lenTest << endl;
-			objects [ *j ].curveX.push_back ( posX );
-			objects [ *j ].curveY.push_back ( posY );
+			curveX->push_back( posX );
+			curveY->push_back( posY );
 			return true;
 		}
 	}
 	
-	if ( objects [ *j ].curveX.size() > 0 ) lenTest += newSegmentLength ( j, &posX, &posY );
-	objects [ *j ].curveX.push_back ( posX );
-	objects [ *j ].curveY.push_back ( posY );
+	if ( curveX->size() > 0 ) lenTest += newSegmentLength( posX, posY );
 	
-	if ( objects [ *j ].slLength > lenTest + 0.1 && last )
+	curveX->push_back( posX );
+	curveY->push_back( posY );
+	
+	if ( length > lenTest + 0.1 && last )
 	{	//cout << " 		CHAECK CURCUM " << endl;
-		float requireSegment = objects [ *j ].slLength - lenTest;
+		float requireSegment = length - lenTest;
 		
-		float refX_2 = (float)objects [ *j ].slRefPointX [ 2 ];
-		float refY_2 = (float)objects [ *j ].slRefPointY [ 2 ];
+		float refX_2 = (float)controlX[ 2 ];
+		float refY_2 = (float)controlY[ 2 ];
 		
-		float lenBuf = newSegmentLength ( j, &refX_2, &refY_2 );
+		float lenBuf = newSegmentLength( refX_2, refY_2 );
 		requireSegment = requireSegment / lenBuf;
 		
-		float vecX = refX_2 - objects [ *j ].curveX.back(); 
-		float vecY = refY_2 - objects [ *j ].curveY.back();
+		float vecX = refX_2 - curveX->back(); 
+		float vecY = refY_2 - curveY->back();
 				
 		vecX = vecX * requireSegment;
 		vecY = vecY * requireSegment;
 				
-		posX = objects [ *j ].curveX.back() + vecX;
-		posY = objects [ *j ].curveY.back() + vecY;
+		posX = curveX->back() + vecX;
+		posY = curveY->back() + vecY;
 				
-		lenTest += newSegmentLength ( j, &posX, &posY );
-		objects [ *j ].curveX.push_back ( posX );
-		objects [ *j ].curveY.push_back ( posY );
+		lenTest += newSegmentLength ( posX, posY );
+		curveX->push_back( posX );
+		curveY->push_back( posY );
 	}
 	return false;
 }
 
-void Beatmap::createSliderCircum ( size_t * j, float * tStep )
+void Beatmap::createSliderCircum()
 {
 	float midX_1, midY_1, midX_2, midY_2;
 	float xA, yA, xB, yB, xC, yC, xD, yD, K, a, b, c, pi;
 	float refX_0, refY_0, refX_1, refY_1, refX_2, refY_2;
 	//bool dekita = false;
 	
-	refX_0 = (float)objects [ *j ].slRefPointX [ 0 ]; 
-	refY_0 = (float)objects [ *j ].slRefPointY [ 0 ];
-	refX_1 = (float)objects [ *j ].slRefPointX [ 1 ];
-	refY_1 = (float)objects [ *j ].slRefPointY [ 1 ];
-	refX_2 = (float)objects [ *j ].slRefPointX [ 2 ];
-	refY_2 = (float)objects [ *j ].slRefPointY [ 2 ];
+	refX_0 = (float)controlX[ 0 ]; 
+	refY_0 = (float)controlY[ 0 ];
+	refX_1 = (float)controlX[ 1 ];
+	refY_1 = (float)controlY[ 1 ];
+	refX_2 = (float)controlX[ 2 ];
+	refY_2 = (float)controlY[ 2 ];
 	
 	midX_1 = ( refX_0 + refX_1 ) / 2.0; 
 	midY_1 = ( refY_0 + refY_1 ) / 2.0;
@@ -111,20 +112,20 @@ void Beatmap::createSliderCircum ( size_t * j, float * tStep )
 
 	a =  0.0001 -  atan ( K );
 	
-	xC = xA + b * cos ( a );
-	yC = yA + b * sin ( a );	
+	xC = xA + b * cos( a );
+	yC = yA + b * sin( a );	
 
 ////////////////////////////////////////////////
 
 	xA = midX_2; 		yA = midY_2;
-
 	xB = refX_2; 		yB = refY_2;
 
-	K = ( xA - xB )/( yA - yB );
+	K = ( xA - xB ) / ( yA - yB );
 
 	a =  0.0001 -  atan (  K );
-	xD = xA + b * cos ( a );
-	yD = yA + b * sin ( a );
+	
+	xD = xA + b * cos( a );
+	yD = yA + b * sin( a );
 	
 	float T, W, L, M, G;
 	
@@ -137,7 +138,7 @@ void Beatmap::createSliderCircum ( size_t * j, float * tStep )
 	
 	if ( W == 0 ) W = 0.00000001;   // а для G, L, K?
 	
-	float intersecX = ( T*L + W *( L*midY_1 + M + G*midX_2 ) ) / ( W*G - K*L );
+	float intersecX = ( T * L + W * ( L * midY_1 + M + G * midX_2 ) ) / ( W * G - K * L );
 	
 	float intersecY = ( ( intersecX * K + T ) / W ) + midY_1;
 	
@@ -155,15 +156,15 @@ void Beatmap::createSliderCircum ( size_t * j, float * tStep )
 					 
 	float angel = ( refX_0 - intersecX ) / R; 
 	if ( angel > 1 ) angel = 1; if ( angel < -1 ) angel = -1;	 
-	float startBow = acos ( angel );	
+	float startBow = acos( angel );	
 	
 	angel = ( refX_2 - intersecX ) / R;
 	if ( angel > 1 ) angel = 1; if ( angel < -1 ) angel = -1;
-	float stopBow = acos ( angel );
+	float stopBow = acos( angel );
 	
 	angel = ( refX_1 - intersecX ) / R;
 	if ( angel > 1 ) angel = 1; if ( angel < -1 ) angel = -1;
-	float midBow = acos ( angel );
+	float midBow = acos( angel );
 	
 	if ( intersecY - refY_0 < 0 ) startBow = PI*2 - startBow;
 	if ( intersecY - refY_2 < 0 ) stopBow = PI*2 - stopBow;
@@ -176,11 +177,11 @@ void Beatmap::createSliderCircum ( size_t * j, float * tStep )
 		{
 			if ( i + CSTEP < stopBow )
 			{
-				if ( getBow ( j, &i, &intersecX, &intersecY, &R, false ) ) break;
+				if ( getBow ( i, intersecX, intersecY, R, false ) ) break;
 			}
 			else
 			{
-				getBow ( j, &i, &intersecX, &intersecY, &R, true );
+				getBow ( i, intersecX, intersecY, R, true );
 			}
 		}
 	else
@@ -188,55 +189,55 @@ void Beatmap::createSliderCircum ( size_t * j, float * tStep )
 			for ( float i = startBow; i > stopBow; i -= CSTEP  )
 				if ( i - CSTEP > stopBow )
 				{
-					if ( getBow ( j, &i, &intersecX, &intersecY, &R, false ) ) break;
+					if ( getBow ( i, intersecX, intersecY, R, false ) ) break;
 				}
 				else
 				{
-					getBow ( j, &i, &intersecX, &intersecY, &R, true );
+					getBow ( i, intersecX, intersecY, R, true );
 				}
 		else
 			if ( startBow > midBow && midBow < stopBow && startBow > stopBow )
 				for ( float i = -( 2*PI - startBow ); i < stopBow; i += CSTEP  )
 					if ( i + CSTEP < stopBow )
 					{
-						if ( getBow ( j, &i, &intersecX, &intersecY, &R, false ) ) break;
+						if ( getBow ( i, intersecX, intersecY, R, false ) ) break;
 					}
 					else
 					{
-						getBow ( j, &i, &intersecX, &intersecY, &R, true );
+						getBow ( i, intersecX, intersecY, R, true );
 					}
 			else
 				if ( startBow < midBow && midBow > stopBow && startBow < stopBow ) 
 					for ( float i = startBow; i > -( 2*PI - stopBow ); i -= CSTEP  )
 						if ( i - CSTEP > -( 2*PI - stopBow ) )
 						{
-							if ( getBow ( j, &i, &intersecX, &intersecY, &R, false ) ) break;
+							if ( getBow ( i, intersecX, intersecY, R, false ) ) break;
 						}
 						else
 						{
-							getBow ( j, &i, &intersecX, &intersecY, &R, true );
+							getBow ( i, intersecX, intersecY, R, true );
 						}
 				else
 					if ( startBow < midBow && midBow > stopBow )
 						for ( float i = -( 2*PI - startBow ); i < stopBow; i += CSTEP  )
 							if ( i + CSTEP < stopBow )
 							{
-								if ( getBow ( j, &i, &intersecX, &intersecY, &R, false ) ) break;
+								if ( getBow ( i, intersecX, intersecY, R, false ) ) break;
 							}
 							else
 							{
-								getBow ( j, &i, &intersecX, &intersecY, &R, true );
+								getBow ( i, intersecX, intersecY, R, true );
 							}
 					else
 						if ( startBow > midBow && midBow < stopBow )
 							for ( float i = startBow; i > -( 2*PI - stopBow ); i -= CSTEP  )
 								if ( i - CSTEP > -( 2*PI - stopBow ) )
 								{
-									if ( getBow ( j, &i, &intersecX, &intersecY, &R, false ) ) break;
+									if ( getBow ( i, intersecX, intersecY, R, false ) ) break;
 								}
 								else
 								{
-									getBow ( j, &i, &intersecX, &intersecY, &R, true );
+									getBow ( i, intersecX, intersecY, R, true );
 								}
 						else std::cout << " SLIDER CIRCUM CREATE ERROR " << std::endl;
 }

@@ -12,7 +12,7 @@
 class Curve {
 public:
 	Curve() { 
-		
+		pixelLength = 0;
 	};
 	~Curve() {
 		//delete curveX;
@@ -42,7 +42,7 @@ protected:
 	
 	float length;
 	float pixelLength;
-	
+	float lenTest;
 	
 	std::vector<int>* controlX;
 	std::vector<int>* controlY;
@@ -50,6 +50,7 @@ protected:
 	std::vector<float>* curveX;
 	std::vector<float>* curveY;
 	
+	float newSegmentLength( float posX, float posY );
 
 };
 

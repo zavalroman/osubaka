@@ -41,7 +41,6 @@ void Bezier::doMath()
 		ndLength += nodeLength[ i ];
 		
 	/*---------Calc sampling frequency in nodes and go----------------*/
-	pixelLength = 0;
 	bendStart = 0;
 	for ( int i = 0; i < slNodeAdr.size(); i++ )
 	{
@@ -70,12 +69,6 @@ long double Bezier::f( int N )
 float Bezier::getBezierBasis( int i, int n, float t )
 {
 	return ( f(n) / ( f(i) * f(n - i) ) ) * pow( t, i ) * pow( 1 - t, n - i );
-}
-
-float Bezier::newSegmentLength( float posX, float posY )
-{
-	return sqrt ( pow( curveX->back() - posX, 2 ) + 
-				  pow( curveY->back() - posY, 2 ) );
 }
 	 
 void Bezier::createCurve( float tStep, int refNum, int bendStart, bool last )

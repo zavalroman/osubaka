@@ -69,8 +69,9 @@ int main( int argc, char** argv )
 	glEnable 	  	( GL_TEXTURE_2D );
 	glTranslatef	( -2.56, -1.92, -4.6 );
 	
-	Beatmap* beatmap = new Beatmap( "/home/kaktus/develop/osu/songs/primary-koizora/Primary - Koizora (Frostmourne) [Insane].osu" );
-	
+	Beatmap* beatmap = new Beatmap();
+	beatmap->readHitObjects( "/home/kaktus/develop/osu/songs/primary-koizora/Primary - Koizora (Frostmourne) [Insane].osu" );
+	beatmap->generateSliders();
 	glutMainLoop();
 	return 0;
 }

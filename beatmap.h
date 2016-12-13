@@ -12,7 +12,12 @@
 class Beatmap {
 public:
 	Beatmap();
-	
+	~Beatmap() {
+		for ( int i = 0; i < hitObjects.size(); i++ ) {
+			delete hitObjects[ i ].curveX;
+			delete hitObjects[ i ].curveY;
+		}
+	}
 	bool readHitObjects( const char* pathToOsuFile );
 	bool generateSliders();
 	

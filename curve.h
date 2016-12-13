@@ -6,16 +6,25 @@
 #ifndef CURVE_H
 #define CURVE_H
 
+//#include <iostream>
 #include <vector>
 
 class Curve {
 public:
-	Curve() { };
-	~Curve();
+	Curve() { 
+		
+	};
+	~Curve() {
+		//delete curveX;
+		//delete curveY;
+	};
 
-	void setControl( std::vector<int>& controlPointsX, std::vector<int>& controlPointsY ) {
+	void setControl( std::vector<int>* controlPointsX, std::vector<int>* controlPointsY ) {
 		controlX = controlPointsX;
 		controlY = controlPointsY;
+		
+		curveX = new std::vector<float>();
+		curveY = new std::vector<float>();
 	}
 	
 	void setLength( float curveLength ) {
@@ -32,12 +41,15 @@ public:
 protected:		
 	
 	float length;
+	float pixelLength;
 	
-	std::vector<int>& controlX;
-	std::vector<int>& controlY;
+	
+	std::vector<int>* controlX;
+	std::vector<int>* controlY;
 	
 	std::vector<float>* curveX;
 	std::vector<float>* curveY;
+	
 
 };
 

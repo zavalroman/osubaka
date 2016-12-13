@@ -8,14 +8,27 @@
 
 class Object {
 public:
-	Object () {};
+	Object ();
 	~Object();
 	
+	/*	color	*/
 	float R, G, B, A;
+	
+	/*	vertites	*/
 	float leftBottomX,  leftBottomY;
 	float leftTopX,	    leftTopY;
 	float rightTopX,    rightTopY;
 	float rightBottomX, rightBottomY;
+	
+	/*	image size	*/
+	int width, height;
+	
+	/*	texture id	*/
+	int image;
+	
+	float x, y;
+	
+private:
 	
 };
 

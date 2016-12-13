@@ -8,6 +8,8 @@
 #include <string>
 //#include <regex>
 
+#include "bezier.h"
+
 Beatmap::Beatmap()
 {
 	
@@ -30,7 +32,7 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 	}
 	
 	while ( getline( *osuFile, line ) ) {
-		std::cout << line.length() << "\n";
+		//std::cout << line.length() << "\n";
 		
 		if ( line.find("[HitObjects]") != std::string::npos )
 			hoFlag = true;
@@ -67,10 +69,10 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 			
 			//if ( intBuf == 2 || intBuf == 6 || intBuf == 22 || intBuf == 38 ) // if slider
 			if ( hitObjects[ hoCount ].type & 2 ) { // if slider
-				control.push_back( cpTemplar );
-				control[ slCount ].hoId = hoCount;
-				control[ slCount ].x.push_back( hitObjects[ hoCount ].x );
-				control[ slCount ].y.push_back( hitObjects[ hoCount ].y );
+				slControl.push_back( cpTemplar );
+				slControl[ slCount ].hoId = hoCount;
+				slControl[ slCount ].x.push_back( hitObjects[ hoCount ].x );
+				slControl[ slCount ].y.push_back( hitObjects[ hoCount ].y );
 				
 				osuFile->get();
 				osuFile->get( hitObjects[ hoCount ].slType[0] );
@@ -111,10 +113,13 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 
 bool Beatmap::generateSliders()
 {
+	Bezier bezier;
+	
 	int hoId;
 	for ( int i = 0; i < slControl.size(); ++i ) {
 		hoId = slControl[ i ].hoId;
-		switch ( hitObjects[ hoId ].slType ) {
+		/*
+		switch ( (int)hitObjects[ hoId ].slType ) {
 			case 'B': {
 				
 				break;
@@ -133,5 +138,15 @@ bool Beatmap::generateSliders()
 				return false;
 			}
 		}
+		*/
+		if ( hitObjects[ hoId ].slType[0] == 'B' ) {
+			
+			bezier.setControl( &slControl[ i ].x, &slControl[ i ].y );
+			bezier.setLength( hitObjects[ hoId ].slLength );
+			bezier.doMath();
+			hitObjects[ hoId ].curveX = bezier.getCurveX();
+			hitObjects[ hoId ].curveY = bezier.getCurveY();
+		}
 	}
+	
 }

@@ -38,6 +38,14 @@ public:
 		return curveY;
 	}
 	
+	void reset() {
+		length = 0;		
+		curveX = 0;
+		curveY = 0;
+		lenTest = 0;
+		pixelLength = 0;
+	}
+	
 protected:		
 	
 	float length;

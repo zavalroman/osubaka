@@ -70,7 +70,7 @@ int main( int argc, char** argv )
 	glTranslatef	( -2.56, -1.92, -4.6 );
 	
 	Beatmap* beatmap = new Beatmap();
-	beatmap->readHitObjects( "/home/kaktus/develop/osu/songs/primary-koizora/Primary - Koizora (Frostmourne) [Insane].osu" );
+	beatmap->readHitObjects( "/home/kaktus/develop/osu/songs/airman/Hanatan - Airman ga Taosenai (SOUND HOLIC Ver.) (Natsu) [Insane].osu" );
 	beatmap->generateSliders();
 	glutMainLoop();
 	return 0;

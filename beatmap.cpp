@@ -9,6 +9,7 @@
 //#include <regex>
 
 #include "bezier.h"
+#include "circum.h"
 
 Beatmap::Beatmap()
 {
@@ -70,12 +71,15 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 			//if ( intBuf == 2 || intBuf == 6 || intBuf == 22 || intBuf == 38 ) // if slider
 			if ( hitObjects[ hoCount ].type & 2 ) { // if slider
 				slControl.push_back( cpTemplar );
-				slControl[ slCount ].hoId = hoCount;
+				  sliders.push_back( slTemplar );
+				
+				hitObjects[ hoCount ].sliderId = slCount;
+				
 				slControl[ slCount ].x.push_back( hitObjects[ hoCount ].x );
 				slControl[ slCount ].y.push_back( hitObjects[ hoCount ].y );
 				
 				osuFile->get();
-				osuFile->get( hitObjects[ hoCount ].slType[0] );
+				osuFile->get( sliders[ slCount ].type[0] );
 				osuFile->get();
 					
 				int j = 1;	
@@ -91,11 +95,11 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 				
 					j++;
 				}		
-				*osuFile >> hitObjects[ hoCount ].slPasses;
+				*osuFile >> sliders[ slCount ].passes;
 				osuFile->get();
-				*osuFile >> hitObjects[ hoCount ].slLength;
+				*osuFile >> sliders[ slCount ].length;
 				osuFile->get();
-				*osuFile >> hitObjects[ hoCount ].slEdgeSound;
+				*osuFile >> sliders[ slCount ].edgeSound;
 				
 				slCount++;
 			} // endif slider
@@ -114,38 +118,30 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 bool Beatmap::generateSliders()
 {
 	Bezier bezier;
+	Circum circum;
 	
-	int hoId;
 	for ( int i = 0; i < slControl.size(); ++i ) {
-		hoId = slControl[ i ].hoId;
-		/*
-		switch ( (int)hitObjects[ hoId ].slType ) {
-			case 'B': {
-				
-				break;
-			}
-			case 'P': {
-				break;
-			}
-			//case 'C': {
-			//	break;
-			//}
-			case 'L': {
-				break;
-			}
-			default: {
-				std::cout << "ERROR: slider type not found\n";
-				return false;
-			}
-		}
-		*/
-		if ( hitObjects[ hoId ].slType[0] == 'B' ) {
-			
+		if ( sliders[ i ].type[0] == 'P' ) {		
+			circum.setControl( &slControl[ i ].x, &slControl[ i ].y );
+			circum.setLength( sliders[ i ].length );
+			circum.doMath();
+			sliders[ i ].curveX = circum.getCurveX();
+			sliders[ i ].curveY = circum.getCurveY();
+			circum.reset();
+		} else {
 			bezier.setControl( &slControl[ i ].x, &slControl[ i ].y );
-			bezier.setLength( hitObjects[ hoId ].slLength );
+			bezier.setLength( sliders[ i ].length );
 			bezier.doMath();
-			hitObjects[ hoId ].curveX = bezier.getCurveX();
-			hitObjects[ hoId ].curveY = bezier.getCurveY();
+			sliders[ i ].curveX = bezier.getCurveX();
+			sliders[ i ].curveY = bezier.getCurveY();
+			bezier.reset();
+		}
+	}
+
+	for ( int i = 0; i < sliders.size(); i++ ) {
+		std::cout << sliders[i].type << std::endl;
+		for ( int j = 0; j < sliders[ i ].curveX->size(); j++ ) {
+			std::cout << sliders[i].curveX->at(j) << "   " << sliders[i].curveY->at(j) << std::endl;
 		}
 	}
 	

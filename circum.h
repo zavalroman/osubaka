@@ -22,7 +22,8 @@ public:
 	void doMath();
 	
 private:
-
+	bool getBow( float i, float intersecX, float intersecY, float R, bool last );
+	void createCircum();
 
 };
 

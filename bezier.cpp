@@ -109,7 +109,6 @@ void Bezier::createCurve( float tStep, int refNum, int bendStart, bool last )
 				lenTest += newSegmentLength( posX, posY );
 				curveX->push_back( posX );
 				curveY->push_back( posY );
-				std::cout << posX << "  " << posY << "\n";
 				return;
 			}
 		}
@@ -121,7 +120,6 @@ void Bezier::createCurve( float tStep, int refNum, int bendStart, bool last )
 		{
 			curveX->push_back( posX );
 			curveY->push_back( posY );
-			std::cout << posX << "  " << posY << "\n";
 		}
 		if ( t == 1.0 ) t = 2.0;
 	}

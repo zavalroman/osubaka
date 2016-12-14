@@ -1,4 +1,6 @@
 
+#include <math.h>
+
 #include "curve.h"
 
 //Curve::Curve()

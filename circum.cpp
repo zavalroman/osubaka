@@ -3,6 +3,7 @@
  * 
  */
 
+#define PI 3.1415926535
 
 #include <iostream>
 #include <math.h>
@@ -15,9 +16,10 @@
 
 void Circum::doMath()
 {
+	createCircum();
 }
 
-bool Beatmap::getBow ( float i, float intersecX, float intersecY, float R, bool last )
+bool Circum::getBow ( float i, float intersecX, float intersecY, float R, bool last )
 {
 	float posX, posY;
 	
@@ -61,8 +63,8 @@ bool Beatmap::getBow ( float i, float intersecX, float intersecY, float R, bool 
 	{	//cout << " 		CHAECK CURCUM " << endl;
 		float requireSegment = length - lenTest;
 		
-		float refX_2 = (float)controlX[ 2 ];
-		float refY_2 = (float)controlY[ 2 ];
+		float refX_2 = (float)controlX->at( 2 );
+		float refY_2 = (float)controlY->at( 2 );
 		
 		float lenBuf = newSegmentLength( refX_2, refY_2 );
 		requireSegment = requireSegment / lenBuf;
@@ -83,19 +85,19 @@ bool Beatmap::getBow ( float i, float intersecX, float intersecY, float R, bool 
 	return false;
 }
 
-void Beatmap::createSliderCircum()
+void Circum::createCircum()
 {
 	float midX_1, midY_1, midX_2, midY_2;
 	float xA, yA, xB, yB, xC, yC, xD, yD, K, a, b, c, pi;
 	float refX_0, refY_0, refX_1, refY_1, refX_2, refY_2;
 	//bool dekita = false;
 	
-	refX_0 = (float)controlX[ 0 ]; 
-	refY_0 = (float)controlY[ 0 ];
-	refX_1 = (float)controlX[ 1 ];
-	refY_1 = (float)controlY[ 1 ];
-	refX_2 = (float)controlX[ 2 ];
-	refY_2 = (float)controlY[ 2 ];
+	refX_0 = (float)controlX->at( 0 ); 
+	refY_0 = (float)controlY->at( 0 );
+	refX_1 = (float)controlX->at( 1 );
+	refY_1 = (float)controlY->at( 1 );
+	refX_2 = (float)controlX->at( 2 );
+	refY_2 = (float)controlY->at( 2 );
 	
 	midX_1 = ( refX_0 + refX_1 ) / 2.0; 
 	midY_1 = ( refY_0 + refY_1 ) / 2.0;

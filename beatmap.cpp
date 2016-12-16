@@ -4,9 +4,8 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-//#include <sstring>
+#include <sstring>
 #include <string>
-//#include <regex>
 
 #include "bezier.h"
 #include "circum.h"
@@ -19,6 +18,7 @@ Beatmap::Beatmap()
 bool Beatmap::readHitObjects( const char* pathToOsuFile )
 {
 	bool hoFlag = false;
+	bool tpFlag = false;
 	int hoCount = 0;
 	int slCount = 0;
 	
@@ -35,6 +35,31 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 	while ( getline( *osuFile, line ) ) {
 		//std::cout << line.length() << "\n";
 		
+		/*---------------------[TimingPoints]-------------------------*/
+		if ( tpFlag && line.size() == 1 ) tpFlag = false;
+			
+		if ( tpFlag ) // tpFlag rename pls - why?
+		{	// эй-эй! а не заменить ли все считываения строки на эту функцию? - зачем?				
+			std::istringstream( line ) >> tempPoint.offset >> comma >> tempPoint.mpb >> comma 
+				>> tempPoint.timeSignature >> comma >> tempPoint.sampleType >> comma
+					>> tempPoint.sampleSet >> 	comma >> tempPoint.volume >> comma
+						>> tempPoint.unknown >>  comma >> tempPoint.kiai;
+				
+			float MPB, mpbFactor; 	
+			if ( tempPoint.mpb < 0 ) {
+				mpbFactor = fabs( tempPoint.mpb / 100 );
+			} else {
+				MPB = tempPoint.mpb;
+				mpbFactor = 1;
+			}
+			tempPoint.slVelosity = ( MPB * mpbFactor ) / ( slMulti * 100 );
+					
+			points.push_back ( tempPoint );
+		}
+			
+		if ( line.find("[TimingPoints]") != std::string::npos ) tpFlag = true;
+		
+		/*-----------------------[HitObjects]-------------------------*/
 		if ( line.find("[HitObjects]") != std::string::npos )
 			hoFlag = true;
 		
@@ -102,7 +127,9 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 				*osuFile >> sliders[ slCount ].edgeSound;
 				
 				slCount++;
-			} // endif slider
+			} else {
+				hitObjects[ hoCount ].sliderId = -1;
+			}
 			//std::cout << hitObjects[ hoCount ].x << "  " << hitObjects[ hoCount ].y << std::endl;
 			
 			hoCount++;
@@ -146,3 +173,4 @@ bool Beatmap::generateSliders()
 	}
 	
 }
+

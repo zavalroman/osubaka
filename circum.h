@@ -14,10 +14,10 @@ class Circum : public Curve {
 public:
 	Circum() : Curve () {
 		
-	};
+	}
 	~Circum() {
 		
-	};
+	}
 	
 	void doMath();
 	

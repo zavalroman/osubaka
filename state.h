@@ -31,12 +31,16 @@ public:
 	float getSlEndX( int j );
 	float getSlEndY( int j );
 	
+	void timeFlow( long mSec );
+	int sliderCycle( long mSec );
+	
 protected:
 	long mSec;
+	int firstRenderObj, lastRenderObj;
 	
 	struct tewiMaSlider // tewima_slider
 	{	// active slider's perameters
-		size_t j; //sliders index
+		int j; //sliders index
 		//int curveLength;
 		float msLength;
 		float ballMsStep;

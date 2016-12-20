@@ -71,7 +71,7 @@ int main( int argc, char** argv )
 	
 	Beatmap* beatmap = new Beatmap();
 	beatmap->readHitObjects( "/home/kaktus/develop/osu/songs/airman/Hanatan - Airman ga Taosenai (SOUND HOLIC Ver.) (Natsu) [Insane].osu" );
-	beatmap->generateSliders();
+	beatmap->createSliders();
 	glutMainLoop();
 	return 0;
 }

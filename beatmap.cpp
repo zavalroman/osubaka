@@ -4,8 +4,10 @@
 #include <iostream>
 #include <fstream>
 #include <cstring>
-#include <sstring>
+#include <sstream>
 #include <string>
+//#include <stdlib.h>
+#include <cmath>
 
 #include "bezier.h"
 #include "circum.h"
@@ -21,6 +23,7 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 	bool tpFlag = false;
 	int hoCount = 0;
 	int slCount = 0;
+	char comma;
 	
 	std::string line;
 	std::fstream* osuFile = new std::fstream;
@@ -142,7 +145,7 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 	return true;
 }
 
-bool Beatmap::generateSliders()
+bool Beatmap::createSliders()
 {
 	Bezier bezier;
 	Circum circum;
@@ -164,13 +167,13 @@ bool Beatmap::generateSliders()
 			bezier.reset();
 		}
 	}
-
+/*
 	for ( int i = 0; i < sliders.size(); i++ ) {
 		std::cout << sliders[i].type << std::endl;
 		for ( int j = 0; j < sliders[ i ].curveX->size(); j++ ) {
 			std::cout << sliders[i].curveX->at(j) << "   " << sliders[i].curveY->at(j) << std::endl;
 		}
 	}
-	
+*/	
 }
 

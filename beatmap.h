@@ -19,7 +19,7 @@ public:
 		}
 	}
 	bool readHitObjects( const char* pathToOsuFile );
-	bool generateSliders();
+	bool createSliders();
 	
 	bool isSlider( int j ) {
 		return hitObjects[ j ].sliderId == -1 ? false : true;
@@ -72,7 +72,15 @@ protected:
 	std::vector<Slider> 		sliders;
 	std::vector<HitObject> 		hitObjects;
 	
+	/* Difficulty */
+	int approachTime;
+	int odTime;
+	float slMulti;
+
+	int tpStep;
 	
+	int bufFirst, bufLast, passCount;
+	bool reverse;
 };
 
 

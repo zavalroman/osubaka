@@ -1,10 +1,10 @@
 
 #include "animation.h"
 
-Animation::Animation()
-{
+//Animation::Animation()
+//{
 
-}
+//}
 
 
 float getApproachCircleSize( int j, long mSec )

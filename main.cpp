@@ -14,6 +14,14 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#define ILUT_USE_OPENGL
+//#include "DevIL/DevIL/include/IL/il.h"
+//#include "DevIL/DevIL/include/IL/ilu.h"
+//#include "DevIL/DevIL/include/IL/ilut.h"
+#include <IL/il.h>
+#include <IL/ilu.h>
+#include <IL/ilut.h>
+
 #include "keyinput.cxx"
 
 #include "beatmap.h"
@@ -69,6 +77,24 @@ int main( int argc, char** argv )
 	glEnable 	  	( GL_TEXTURE_2D );
 	glTranslatef	( -2.56, -1.92, -4.6 );
 	
+	/*----------------------------DevIL-------------------------------*/
+	if ( ilGetInteger( IL_VERSION_NUM ) < IL_VERSION ) {
+		printf( "Incorrect devil library version\n" );
+		return 1;
+	}
+	if ( ilutGetInteger( ILUT_VERSION_NUM ) < ILUT_VERSION ) {
+		printf ( "Incorrect ilut library version\n");
+		return 1;
+	}	
+	ilInit();
+	iluInit();
+	ilutInit();
+	ilutRenderer ( ILUT_OPENGL );
+	
+	//skin = new Skin();
+								
+	//loadGraphicElements(); // loadSkin.cxx
+	/*---------------END_IMAGES----------------*/
 	Beatmap* beatmap = new Beatmap();
 	beatmap->readHitObjects( "/home/kaktus/develop/osu/songs/airman/Hanatan - Airman ga Taosenai (SOUND HOLIC Ver.) (Natsu) [Insane].osu" );
 	beatmap->createSliders();

@@ -57,21 +57,21 @@ int State::sliderCycle( long mSec )
 			activeSliders[ i ].ballCurrentStep = 0.5 + (float)( mSec - activeSliders[ i ].startTime ) / activeSliders[ i ].ballMsStep; //calc new position for ball
 					
 			if ( activeSliders[ i ].ballCurrentStep > sliders[ activeSliders[ i ].j ].curveX->size() - 1 ) // совпадают ли крайние опорные элементы расчетным?
-			{	//ball reverse
-				activeSliders[ i ].ballCurrentStep = sliders[ activeSliders[ i ].j ].curveX->size() - 1; // единица!
-				activeSliders[ i ].startTime += 0.5 + activeSliders[ i ].msLength;
-				activeSliders[ i ].reverse = true;
-				sound = 1;
+			{	 //ball reverse
+				 activeSliders[ i ].ballCurrentStep = sliders[ activeSliders[ i ].j ].curveX->size() - 1; // единица!
+				 activeSliders[ i ].startTime += 0.5 + activeSliders[ i ].msLength;
+				 activeSliders[ i ].reverse = true;
+				 sound = 1;
 			}
 		} else {
 			activeSliders[ i ].ballCurrentStep = 0.5 + sliders[ activeSliders[ i ].j ].curveX->size() - 1 - // единица
 						( (float)( mSec - activeSliders[ i ].startTime ) / activeSliders[ i ].ballMsStep );
 			
 			if ( activeSliders[ i ].ballCurrentStep <= 0 ) {
-				activeSliders[ i ].ballCurrentStep = 0;
-				activeSliders[ i ].startTime += 0.5 + activeSliders[ i ].msLength;
-				activeSliders[ i ].reverse = false;
-				sound = 1;
+				 activeSliders[ i ].ballCurrentStep = 0;
+				 activeSliders[ i ].startTime += 0.5 + activeSliders[ i ].msLength;
+				 activeSliders[ i ].reverse = false;
+				 sound = 1;
 			}
 		}	
 	}
@@ -81,6 +81,10 @@ int State::sliderCycle( long mSec )
 	return 0;
 }
 
+void State::setFirstRenderObjId( int j )
+{
+	firstRenderObj = j;
+}
 
 int State::getFirstRenderObjId()
 {
@@ -100,6 +104,16 @@ float State::getCircleX( int j )
 float State::getCircleY( int j )
 {
 	return hitObjects[ j ].y;
+}
+
+int State::getActiveSlAmount( void )
+{
+	return activeSliders.size();
+}
+
+int State::getActiveSlId( int i )
+{
+	return activeSliders[ i ].j;
 }
 
 int State::getCurveLen( int j )

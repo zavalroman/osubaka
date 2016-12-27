@@ -20,11 +20,14 @@ public:
 		mSec = currentTime;
 	}
 	
+	void setFirstRenderObjId( int j );
 	int getFirstRenderObjId();
 	int getLastRenderObjId();
 	float getCircleX( int j );
 	float getCircleY( int j );
 	
+	int getActiveSlId( int i );
+	int getActiveSlAmount( void );
 	int getCurveLen( int j );
 	float getCurveX( int j, int i );
 	float getCurveY( int j, int i );

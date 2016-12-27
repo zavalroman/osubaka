@@ -15,30 +15,55 @@
 #include <GL/glut.h>
 
 #define ILUT_USE_OPENGL
-//#include "DevIL/DevIL/include/IL/il.h"
-//#include "DevIL/DevIL/include/IL/ilu.h"
-//#include "DevIL/DevIL/include/IL/ilut.h"
 #include <IL/il.h>
 #include <IL/ilu.h>
 #include <IL/ilut.h>
 
+#include <sys/time.h>
+
+#include "skin.h"
+#include "picture.h"
+
+struct timeval start, end;
+long  mSec, seconds, useconds;
+
+Skin* skin;
+Picture* hitPicture;
+
+float ballX;
+float ballY;
+
 #include "keyinput.cxx"
+#include "render.cxx"
+#include "skin.cxx"
 
-#include "beatmap.h"
-
-void display ( void )
+void display( void )
 {
+	/*-------------------------getting milliseconds-----------------------*/			
+	gettimeofday ( &end, NULL );
+	seconds = end.tv_sec - start.tv_sec;					// вынести в функцию
+	useconds = end.tv_usec - start.tv_usec;
+	mSec = ( ( seconds ) * 1000 + useconds / 1000.0 ) + 0.5;
+	
+	//mSec -= msDelay;	 // offset
+	/*-------------------------END milliseconds-----------------------*/
+		
+	hitPicture->timeFlow( mSec );
+	hitPicture->sliderCycle( mSec );
+	drawObjects();
+	
 	/*-----------------Clear display---------------------------*/	
 	glClearColor	( 0.0f, 0.0f, 0.0f, 1.0f );
 	//glClearDepth  ( 1.0 );
 	glClear			( GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT ); //Clear the color buffer (more buffers later on)
 	/*------------------END Clear----------------------------*/
 	
+	
 	glutSwapBuffers();
 	glutPostRedisplay(); 
 }
 
-void reshape ( int width, int height )
+void reshape( int width, int height )
 {
 	glViewport		( 0, 0, (GLsizei)width, (GLsizei)height ); //Set our viewport to the size of our window
 	glMatrixMode	( GL_PROJECTION ); //Switch to the projection matrix so that we can manipulate how our scene is viewed
@@ -91,13 +116,18 @@ int main( int argc, char** argv )
 	ilutInit();
 	ilutRenderer ( ILUT_OPENGL );
 	
-	//skin = new Skin();
+	skin = new Skin();
 								
-	//loadGraphicElements(); // loadSkin.cxx
+	loadGraphicElements(); // loadSkin.cxx
 	/*---------------END_IMAGES----------------*/
-	Beatmap* beatmap = new Beatmap();
-	beatmap->readHitObjects( "/home/kaktus/develop/osu/songs/airman/Hanatan - Airman ga Taosenai (SOUND HOLIC Ver.) (Natsu) [Insane].osu" );
-	beatmap->createSliders();
+	
+	hitPicture = new Picture;
+	hitPicture->readHitObjects( "/home/kaktus/develop/osu/songs/airman/Hanatan - Airman ga Taosenai (SOUND HOLIC Ver.) (Natsu) [Insane].osu" );
+	hitPicture->createSliders();
+	
+	gettimeofday ( &start, NULL );
+	mSec = 0;
+	
 	glutMainLoop();
 	return 0;
 }

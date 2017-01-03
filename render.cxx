@@ -160,7 +160,7 @@ void drawObjects( void ) //  в друзья добавить?
 	
 	int firstObj = hitPicture->getFirstRenderObjId();
 	int lastObj = hitPicture->getLastRenderObjId();
-
+	
 	/*-----------------pre activeSliders objects----------------------*/
 	if ( firstObj >= 0 ) // что-то сделать с этим?
 	{
@@ -176,22 +176,28 @@ void drawObjects( void ) //  в друзья добавить?
 					//circle ( 1, 1, 1, hitPicture -> getSlEndX( k ),  hitPicture -> getSlEndY( k ), 0.4, skin -> reverseArrow.index );
 				//}				
 			}
-			//circle( 0.46, 0.79, 0,  hitPicture->getObjX( k ),  hitPicture->getCircleY( k ), hitPicture->getApproachCircleSize( k, mSec ), skin->approachCircle.index );
+			circle( 0.46, 0.79, 0,  hitPicture->getCircleX( k ),  hitPicture->getCircleY( k ), hitPicture->getApproachCircleSize( k ), skin->approachCircle.index );
 			circle( 0.46, 0.79, 0,  hitPicture->getCircleX( k ),  hitPicture->getCircleY( k ), 0.4, skin->hitCircle.index );
-			circle(    1, 	 1, 1,  hitPicture->getCircleX( k ),  hitPicture->getCircleY( k ), 0.4, skin->hitCircleOverlay.index );		
+			circle(    1, 	 1, 1,  hitPicture->getCircleX( k ),  hitPicture->getCircleY( k ), 0.4, skin->hitCircleOverlay.index );	
 		}
 	} else hitPicture->setFirstRenderObjId( 0 ); //?
-	
+	//std::cout << hitPicture->getActiveSlAmount() << std::endl;
 	for ( int i = 0; i < hitPicture->getActiveSlAmount(); i++ )	{ // draw active sliders
 		j = hitPicture->getActiveSlId( i );
-		for ( int l = 0 ; l < hitPicture->getCurveLen( j ); l++ )
-					drawSliders( hitPicture->getCurveX( j, l ), hitPicture->getCurveY( j, l ) );// draw body of slider
-		// draw end circle			
+		//std::cout << "active sl len " << hitPicture->getActiveSlLen( 0 ) << std::endl;
+		for ( int l = 0 ; l < hitPicture->getCurveLen( j ); l++ ) {
+			//std::cout << "for active " << hitPicture->getActiveCurveX( j, l ) << std::endl;
+			drawSliders( hitPicture->getCurveX( j, l ), hitPicture->getCurveY( j, l ) );// draw body of slider
+					
+		}
+		
+		// draw end circle		
 		circle( 0.46, 0.79,   0,  hitPicture->getSlEndX( j ),  hitPicture->getSlEndY( j ), 0.4, skin->hitCircle.index );
 		circle(  0.5,    1, 0.4,  hitPicture->getSlEndX( j ),  hitPicture->getSlEndY( j ), 0.4, skin->hitCircleOverlay.index );
 		// draw first circle
 		circle( 0.46, 0.79, 0,  hitPicture->getCircleX( j ),  hitPicture->getCircleY( j ), 0.4, skin->hitCircle.index );
 		circle(    1, 	 1, 1,  hitPicture->getCircleX( j ),  hitPicture->getCircleY( j ), 0.4, skin->hitCircleOverlay.index );
+		//std::cout << "draw\n";
 		/*
 		if (  hitPicture->theRepeat( j ) ) // draw repeate arrow
 			if ( hitPicture->getCurrentRep( j ) & 1 ) {

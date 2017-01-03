@@ -24,6 +24,7 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 	int hoCount = 0;
 	int slCount = 0;
 	char comma;
+	char slMuChar[50];
 	
 	std::string line;
 	std::fstream* osuFile = new std::fstream;
@@ -38,6 +39,14 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 	while ( getline( *osuFile, line ) ) {
 		//std::cout << line.length() << "\n";
 		
+		if ( line.find("SliderMultiplier:") != std::string::npos ) {
+			strcpy( slMuChar, line.c_str() );	// ПЕРЕДЕЛАТЬ &strBuf [ 17 ]
+			slMuChar[0] = slMuChar[17];
+			slMuChar[1] = slMuChar[18];
+			slMuChar[2] = slMuChar[19];
+			slMulti = atof( slMuChar );			
+		}
+			
 		/*---------------------[TimingPoints]-------------------------*/
 		if ( tpFlag && line.size() == 1 ) tpFlag = false;
 			
@@ -56,7 +65,7 @@ bool Beatmap::readHitObjects( const char* pathToOsuFile )
 				mpbFactor = 1;
 			}
 			tempPoint.slVelosity = ( MPB * mpbFactor ) / ( slMulti * 100 );
-					
+			
 			points.push_back ( tempPoint );
 		}
 			
@@ -169,11 +178,11 @@ bool Beatmap::createSliders()
 	}
 /*
 	for ( int i = 0; i < sliders.size(); i++ ) {
-		std::cout << sliders[i].type << std::endl;
+		std::cout << sliders[i].type[0] << std::endl;
 		for ( int j = 0; j < sliders[ i ].curveX->size(); j++ ) {
 			std::cout << sliders[i].curveX->at(j) << "   " << sliders[i].curveY->at(j) << std::endl;
 		}
 	}
-*/	
+*/
 }
 

@@ -1,6 +1,6 @@
 
 #include "picture.h"
-
+#include <iostream>
 //Picture::Picture()
 //{
 

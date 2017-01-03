@@ -11,7 +11,7 @@
 class Picture : public State {
 public:
 	Picture() : State() {
-	
+		approachTime = 500.0;
 	}
 	~Picture() {
 	}
@@ -25,7 +25,7 @@ public:
 	
 	
 private:
-	float approachTime;
+	//float approachTime;
 
 };
 

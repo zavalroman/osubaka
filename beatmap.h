@@ -73,7 +73,7 @@ protected:
 	std::vector<HitObject> 		hitObjects;
 	
 	/* Difficulty */
-	int approachTime;
+	float approachTime;
 	int odTime;
 	float slMulti;
 

@@ -4,9 +4,10 @@
 */
 
 #include "state.h"
+#include <iostream>
 
-void State::timeFlow( long mSec )
-{
+void State::timeFlow()
+{	
 	while ( hitObjects[ firstRenderObj + 1 ].time <= mSec + approachTime ) firstRenderObj++;
 	
 	while ( hitObjects[ lastRenderObj ].time < mSec ) lastRenderObj++;
@@ -15,7 +16,7 @@ void State::timeFlow( long mSec )
 }
 
 
-int State::sliderCycle( long mSec )
+int State::sliderCycle()
 {
 	int sound = 0;
 
@@ -29,26 +30,28 @@ int State::sliderCycle( long mSec )
 		}
 		*/
 		
-		if ( bufLast != lastRenderObj && isSlider ( lastRenderObj - 1 ) )
+		if ( bufLast != lastRenderObj && isSlider( lastRenderObj - 1 ) )
 		{   //new active slider
 			bufLast = lastRenderObj;	// bufLast change to static local?
 			
-			tewi.j = hitObjects[ lastRenderObj - 1 ].sliderId;
+			tewi.objId = lastRenderObj - 1;
+			tewi.slId = hitObjects[ tewi.objId ].sliderId;
 			//tewiTemplar.curveLength = objects [ tewiTemplar.j ].curveX.size() - 1;   // -1 -1 -1??
-			tewi.msLength = points[ tpStep ].slVelosity * sliders[ tewi.j ].length;
-			tewi.ballMsStep = tewi.msLength / sliders[ tewi.j ].curveX->size(); // добавить минус?
-			tewi.startTime = hitObjects[ tewi.j ].time;
-			tewi.endTime = 0.5 + tewi.startTime + tewi.msLength * sliders[ tewi.j ].passes; //																														
+			tewi.msLength = points[ tpStep ].slVelosity * sliders[ tewi.slId ].length;
+			tewi.ballMsStep = tewi.msLength / sliders[ tewi.slId ].curveX->size(); // добавить минус?
+			tewi.startTime = hitObjects[ tewi.objId ].time;
+			tewi.endTime = 0.5 + tewi.startTime + tewi.msLength * sliders[ tewi.slId ].passes;
+			std::cout << "new active " << tewi.objId << "   " << tewi.startTime << "   " << tewi.endTime << std::endl;
 			tewi.ballCurrentStep = 0;
 			tewi.reverse = false;
-			activeSliders.push_back( tewi );		
+			activeSliders.push_back( tewi );
 		}
 	}
 	
 	for ( int i = 0; i < activeSliders.size(); i++ )
 	{ //active sliders cycle
 		if ( activeSliders[ i ].endTime < mSec ) { // delete active slider
-			deletedSlider.push_back( activeSliders[ i ].j );	// DELETED SLIDER
+			deletedSlider.push_back( activeSliders[ i ].objId );	// DELETED SLIDER
 			activeSliders.erase( activeSliders.begin() + i );
 		}
 		
@@ -56,15 +59,15 @@ int State::sliderCycle( long mSec )
 		{ //cout << " reverse false " << endl;
 			activeSliders[ i ].ballCurrentStep = 0.5 + (float)( mSec - activeSliders[ i ].startTime ) / activeSliders[ i ].ballMsStep; //calc new position for ball
 					
-			if ( activeSliders[ i ].ballCurrentStep > sliders[ activeSliders[ i ].j ].curveX->size() - 1 ) // совпадают ли крайние опорные элементы расчетным?
+			if ( activeSliders[ i ].ballCurrentStep > sliders[ activeSliders[ i ].objId ].curveX->size() - 1 ) // совпадают ли крайние опорные элементы расчетным?
 			{	 //ball reverse
-				 activeSliders[ i ].ballCurrentStep = sliders[ activeSliders[ i ].j ].curveX->size() - 1; // единица!
+				 activeSliders[ i ].ballCurrentStep = sliders[ activeSliders[ i ].objId ].curveX->size() - 1; // единица!
 				 activeSliders[ i ].startTime += 0.5 + activeSliders[ i ].msLength;
 				 activeSliders[ i ].reverse = true;
 				 sound = 1;
 			}
 		} else {
-			activeSliders[ i ].ballCurrentStep = 0.5 + sliders[ activeSliders[ i ].j ].curveX->size() - 1 - // единица
+			activeSliders[ i ].ballCurrentStep = 0.5 + sliders[ activeSliders[ i ].objId ].curveX->size() - 1 - // единица
 						( (float)( mSec - activeSliders[ i ].startTime ) / activeSliders[ i ].ballMsStep );
 			
 			if ( activeSliders[ i ].ballCurrentStep <= 0 ) {
@@ -98,12 +101,12 @@ int State::getLastRenderObjId()
 
 float State::getCircleX( int j )
 {
-	return hitObjects[ j ].x;
+	return (float)hitObjects[ j ].x / 100;
 }
 
 float State::getCircleY( int j )
 {
-	return hitObjects[ j ].y;
+	return (float)( 384 - hitObjects[ j ].y ) / 100;
 }
 
 int State::getActiveSlAmount( void )
@@ -113,7 +116,22 @@ int State::getActiveSlAmount( void )
 
 int State::getActiveSlId( int i )
 {
-	return activeSliders[ i ].j;
+	return activeSliders[ i ].objId;
+}
+
+int State::getActiveSlLen( int j )
+{
+	return sliders[ activeSliders[ j ].slId ].curveX->size();
+}
+
+float State::getActiveCurveX( int j, int i ) // здесь дублирование аналогичных функций. разобраться бы
+{
+	return sliders[ activeSliders[ j ].slId ].curveX->at( i ) / 100;
+}
+
+float State::getActiveCurveY( int j, int i )
+{
+	return ( 384 - sliders[ activeSliders[ j ].slId ].curveY->at( i ) ) / 100;
 }
 
 int State::getCurveLen( int j )
@@ -123,20 +141,20 @@ int State::getCurveLen( int j )
 
 float State::getCurveX( int j, int i )
 {
-	return sliders[ hitObjects[ j ].sliderId ].curveX->at( i );
+	return sliders[ hitObjects[ j ].sliderId ].curveX->at( i ) / 100;
 }
 
 float State::getCurveY( int j, int i )
 {
-	return sliders[ hitObjects[ j ].sliderId ].curveY->at( i );
+	return ( 384 - sliders[ hitObjects[ j ].sliderId ].curveY->at( i ) ) / 100;
 }
 
 float State::getSlEndX( int j )
 {
-	return sliders[ hitObjects[ j ].sliderId ].curveX->back();
+	return sliders[ hitObjects[ j ].sliderId ].curveX->back() / 100;
 }
 
 float State::getSlEndY( int j )
 {
-	return sliders[ hitObjects[ j ].sliderId ].curveY->back();
+	return ( 384 - sliders[ hitObjects[ j ].sliderId ].curveY->back() ) / 100;
 }

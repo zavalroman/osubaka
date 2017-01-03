@@ -11,7 +11,13 @@
 class State : public Beatmap {
 public:
 	State() : Beatmap() {
-	
+		firstRenderObj 	   = 0;
+		lastRenderObj      = 0;
+		//postLastObj		   = 0;
+		bufFirst           = -1;
+		bufLast			   = 0;
+		tpStep			   = 0;
+		
 	}
 	~State() {
 	}
@@ -28,14 +34,17 @@ public:
 	
 	int getActiveSlId( int i );
 	int getActiveSlAmount( void );
+	int getActiveSlLen( int j );
+	float getActiveCurveX( int j, int i );
+	float getActiveCurveY( int j, int i );
 	int getCurveLen( int j );
 	float getCurveX( int j, int i );
 	float getCurveY( int j, int i );
 	float getSlEndX( int j );
 	float getSlEndY( int j );
 	
-	void timeFlow( long mSec );
-	int sliderCycle( long mSec );
+	void timeFlow();
+	int sliderCycle();
 	
 protected:
 	long mSec;
@@ -43,7 +52,8 @@ protected:
 	
 	struct tewiMaSlider // tewima_slider
 	{	// active slider's perameters
-		int j; //sliders index
+		int objId;
+		int slId; //sliders index // не надо?
 		//int curveLength;
 		float msLength;
 		float ballMsStep;
